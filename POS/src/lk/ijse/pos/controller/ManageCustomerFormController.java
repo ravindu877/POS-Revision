@@ -61,16 +61,12 @@ public class ManageCustomerFormController implements Initializable {
             ArrayList<Customer> allCustomers = customerDAO.getAllCustomers();
             ArrayList<CustomerTM> allCustomersForTable = new ArrayList<>();
 
-            while (rst.next()) {
+            ArrayList<CustomerTM> alCustomers = new ArrayList<>();
 
-                CustomerTM customer = new CustomerTM(
-                        rst.getString(1),
-                        rst.getString(2),
-                        rst.getString(3));
-
-                alCustomers.add(customer);
-
+            for (Customer customer : allCustomers) {
+                allCustomersForTable.add(new CustomerTM(customer.getcID(), customer.getName(), customer.getAddress()));
             }
+
 
             ObservableList<CustomerTM> olCustomers = FXCollections.observableArrayList(alCustomers);
 
@@ -131,9 +127,11 @@ public class ManageCustomerFormController implements Initializable {
             String customerID = tblCustomers.getSelectionModel().getSelectedItem().getId();
 
             try {
-                /*delete*/
 
-                if (affectedRows > 0) {
+                CustomerDaoImpl customerDAO = new CustomerDaoImpl();
+                boolean isDelete= customerDAO.deleteCustomer(customerID);
+
+                if (isDelete) {
                     loadAllCustomers();
                 } else {
                     Alert a = new Alert(Alert.AlertType.ERROR, "Failed to delete the customer", ButtonType.OK);
@@ -167,8 +165,12 @@ public class ManageCustomerFormController implements Initializable {
         if (addnew) {
 
             try {
-                /*Save*/
-                if (affectedRows > 0) {
+
+                CustomerDaoImpl customerDAO = new CustomerDaoImpl();
+                boolean isAdded= customerDAO.addCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
+
+
+                if (isAdded) {
                     loadAllCustomers();
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Unable to add new customer", ButtonType.OK).show();
@@ -181,8 +183,10 @@ public class ManageCustomerFormController implements Initializable {
             try {
                 /*Update*/
 
+                CustomerDaoImpl customerDAO = new CustomerDaoImpl();
+                boolean isUpdated= customerDAO.updateCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
 
-                if (affectedRows > 0) {
+                if (isUpdated) {
                     loadAllCustomers();
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Unable to update the customer", ButtonType.OK).show();
