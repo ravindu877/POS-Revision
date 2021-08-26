@@ -52,8 +52,9 @@ public class ItemDaoImpl {
 
     public Item searchItem(String code) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
-        Statement stm = connection.createStatement();
-        ResultSet rst = stm.executeQuery("SELECT * FROM Item where code=?");
+        PreparedStatement pstm= connection.prepareStatement("SELECT * FROM Item where code=?");
+        pstm.setObject(1,code);
+        ResultSet rst = pstm.executeQuery();
         if (rst.next()){
             return new Item(
                     rst.getString(1),

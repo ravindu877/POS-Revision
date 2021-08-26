@@ -15,12 +15,11 @@ public class CustomerDaoImpl {
     public boolean addCustomer(Customer customer) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO Customer VALUES (?,?,?,?)");
+        PreparedStatement pstm = connection.prepareStatement("INSERT INTO Customer VALUES (?,?,?)");
 
         pstm.setObject(1, customer.getcID());
         pstm.setObject(2, customer.getName());
         pstm.setObject(3, customer.getAddress());
-        pstm.setObject(4, 0);
 
         return pstm.executeUpdate()> 0;
 
@@ -38,7 +37,7 @@ public class CustomerDaoImpl {
     public boolean updateCustomer(Customer customer) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
-        PreparedStatement pstm = connection.prepareStatement("UPDATE Customer SET name=?, address=? WHERE id=?");
+        PreparedStatement pstm = connection.prepareStatement("UPDATE Customer SET name=?, address=? WHERE cID=?");
         pstm.setObject(1, customer.getName());
         pstm.setObject(2, customer.getAddress());
         pstm.setObject(3, customer.getcID());
@@ -48,8 +47,9 @@ public class CustomerDaoImpl {
 
     public Customer searchCustomer(String id) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
-        Statement stm = connection.createStatement();
-        ResultSet rst = stm.executeQuery("SELECT * FROM Customer where id=?");
+        PreparedStatement pstm= connection.prepareStatement("SELECT * FROM Customer where cID=?");
+        pstm.setObject(1,id);
+        ResultSet rst = pstm.executeQuery();
         if (rst.next()){
             return new Customer(
                     rst.getString(1),

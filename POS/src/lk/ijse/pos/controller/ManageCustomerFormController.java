@@ -68,7 +68,7 @@ public class ManageCustomerFormController implements Initializable {
             }
 
 
-            ObservableList<CustomerTM> olCustomers = FXCollections.observableArrayList(alCustomers);
+            ObservableList<CustomerTM> olCustomers = FXCollections.observableArrayList(allCustomersForTable);
 
             tblCustomers.setItems(olCustomers);
 

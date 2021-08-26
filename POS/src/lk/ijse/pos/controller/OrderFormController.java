@@ -20,16 +20,26 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lk.ijse.pos.dao.CustomerDaoImpl;
+import lk.ijse.pos.dao.ItemDaoImpl;
+import lk.ijse.pos.dao.OrderDaoImpl;
+import lk.ijse.pos.dao.OrderDetailsDaoImpl;
 import lk.ijse.pos.db.DBConnection;
+import lk.ijse.pos.model.Customer;
+import lk.ijse.pos.model.Item;
+import lk.ijse.pos.model.OrderDetails;
+import lk.ijse.pos.model.Orders;
 import lk.ijse.pos.view.tblmodel.OrderDetailTM;
 
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -117,16 +127,16 @@ public class OrderFormController implements Initializable {
                 }
 
                 try {
-                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM Customer WHERE id=?");
-                    pstm.setObject(1, customerID);
-                    ResultSet rst = pstm.executeQuery();
 
-                    if (rst.next()) {
-                        String customerName = rst.getString(2);
-                        txtCustomerName.setText(customerName);
+                    CustomerDaoImpl customerDao= new CustomerDaoImpl();
+
+                    Customer customer= customerDao.searchCustomer(customerID);
+
+                    if (customer != null) {
+                        txtCustomerName.setText(customer.getName());
                     }
 
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -148,21 +158,20 @@ public class OrderFormController implements Initializable {
                 }
 
                 try {
-                    PreparedStatement pstm = connection.prepareStatement("SELECT * FROM Item WHERE code = ?");
-                    pstm.setObject(1, itemCode);
 
-                    ResultSet rst = pstm.executeQuery();
+                    ItemDaoImpl itemDao= new ItemDaoImpl();
+                    Item item= itemDao.searchItem(itemCode);
 
-                    if (rst.next()) {
-                        String description = rst.getString(2);
-                        double unitPrice = rst.getDouble(3);
-                        int qtyOnHand = rst.getInt(4);
+                    if (item!=null) {
+                        String description = item.getDescription();
+                        BigDecimal unitPrice = item.getUnitPrice();
+                        int qtyOnHand = item.getQtyOnHand();
 
                         txtDescription.setText(description);
                         txtUnitPrice.setText(unitPrice + "");
                         txtQtyOnHand.setText(qtyOnHand + "");
                     }
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -220,19 +229,26 @@ public class OrderFormController implements Initializable {
 
     }
 
-    private void loadAllData() throws SQLException {
+    private void loadAllData() throws Exception {
 
-        Statement stm = connection.createStatement();
-        ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
+        CustomerDaoImpl customerDao= new CustomerDaoImpl();
+        ArrayList<Customer> customer= customerDao.getAllCustomers();
+
         cmbCustomerID.getItems().removeAll(cmbCustomerID.getItems());
-        while (rst.next()) {
-            String id = rst.getString(1);
+
+        for (Customer customer1: customer) {
+            String id = customer1.getcID();
             cmbCustomerID.getItems().add(id);
         }
-        rst = stm.executeQuery("SELECT * FROM Item");
+
+
+        ItemDaoImpl itemDao= new ItemDaoImpl();
+        ArrayList<Item> items= itemDao.getAllItems();
+
         cmbItemCode.getItems().removeAll(cmbItemCode.getItems());
-        while (rst.next()) {
-            String itemCode = rst.getString(1);
+
+        for (Item item: items) {
+            String itemCode = item.getCode();
             cmbItemCode.getItems().add(itemCode);
         }
 
@@ -298,49 +314,46 @@ public class OrderFormController implements Initializable {
     }
 
     @FXML
-    private void btnPlaceOrderOnAction(ActionEvent event) {
+    private void btnPlaceOrderOnAction(ActionEvent event) throws Exception {
         try {
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO Orders VALUES (?,?,?)";
-            PreparedStatement pstm = connection.prepareStatement(sql);
-            pstm.setObject(1, txtOrderID.getText());
-            pstm.setObject(2, parseDate(txtOrderDate.getEditor().getText()));
-            pstm.setObject(3, cmbCustomerID.getSelectionModel().getSelectedItem());
-            int affectedRows = pstm.executeUpdate();
 
-            if (affectedRows == 0) {
+            OrderDaoImpl orderDao= new OrderDaoImpl();
+
+            String custID=cmbCustomerID.getSelectionModel().getSelectedItem();
+
+            boolean isAdded= orderDao.addOrder(new Orders(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID));
+
+            if (!isAdded) {
                 connection.rollback();
                 return;
             }
 
-            pstm = connection.prepareStatement("INSERT INTO OrderDetails VALUES (?,?,?,?)");
-
 
             for (OrderDetailTM orderDetail : olOrderDetails) {
-                pstm.setObject(1, txtOrderID.getText());
-                pstm.setObject(2, orderDetail.getItemCode());
-                pstm.setObject(3, orderDetail.getQty());
-                pstm.setObject(4, orderDetail.getUnitPrice());
-                affectedRows = pstm.executeUpdate();
 
-                if (affectedRows == 0) {
+                OrderDetailsDaoImpl detailsDao= new OrderDetailsDaoImpl();
+
+                boolean isAdded1= detailsDao.addOrderDetails(new OrderDetails(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
+
+                if (!isAdded1) {
                     connection.rollback();
                     return;
                 }
                 int qtyOnHand = 0;
 
-                Statement stm = connection.createStatement();
-                ResultSet rst = stm.executeQuery("SELECT * FROM Item WHERE code='" + orderDetail.getItemCode() + "'");
-                if (rst.next()) {
-                    qtyOnHand = rst.getInt(4);
+                ItemDaoImpl itemDao= new ItemDaoImpl();
+                Item item= itemDao.searchItem(orderDetail.getItemCode());
+
+                if (item!=null) {
+                    qtyOnHand = item.getQtyOnHand();
                 }
-                PreparedStatement pstm2 = connection.prepareStatement("UPDATE Item SET qtyOnHand=? WHERE code=?");
-                pstm2.setObject(1, qtyOnHand - orderDetail.getQty());
-                pstm2.setObject(2, orderDetail.getItemCode());
 
-                affectedRows = pstm2.executeUpdate();
+                OrderDaoImpl orderDao1= new OrderDaoImpl();
+                int newQry= qtyOnHand - orderDetail.getQty();
+                boolean issAdded1= orderDao1.updateItemQty(newQry,orderDetail.getItemCode());
 
-                if (affectedRows == 0) {
+                if (!issAdded1) {
                     connection.rollback();
                     return;
                 }
