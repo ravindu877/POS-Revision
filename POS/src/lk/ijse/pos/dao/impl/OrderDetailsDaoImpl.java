@@ -1,5 +1,6 @@
-package lk.ijse.pos.dao;
+package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.OrderDetailsDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.OrderDetails;
 import lk.ijse.pos.model.Orders;
@@ -8,8 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
-public class OrderDetailsDaoImpl {
+public class OrderDetailsDaoImpl implements OrderDetailsDao {
 
+    @Override
     public boolean addOrderDetails(OrderDetails orderDetails) throws Exception {
         Connection connection= DBConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement("INSERT INTO OrderDetails VALUES (?,?,?,?)");
@@ -20,19 +22,20 @@ public class OrderDetailsDaoImpl {
         return pstm.executeUpdate()>0;
     }
 
+    @Override
     public boolean deleteOrder(String id){
-        return false;
+        throw new UnsupportedOperationException("This feature not supported.");
     }
 
-    public boolean updateOrder(OrderDetails orderDetails){
-        return false;
-    }
+    @Override
+    public boolean updateOrder(OrderDetails orderDetails){ throw new UnsupportedOperationException("This feature not supported."); }
 
+    @Override
     public Orders searchOrder(String id){
-        return null;
+        throw new UnsupportedOperationException("This feature not supported.");
     }
 
-    public ArrayList<OrderDetails> getAllOrders(){
-        return null;
-    }
+    @Override
+    public ArrayList<OrderDetails> getAllOrders(){ throw new UnsupportedOperationException("This feature not supported."); }
+
 }

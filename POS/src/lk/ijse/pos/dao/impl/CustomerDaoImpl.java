@@ -1,5 +1,6 @@
-package lk.ijse.pos.dao;
+package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.CustomerDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.view.tblmodel.CustomerTM;
@@ -10,8 +11,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class CustomerDaoImpl {
+public class CustomerDaoImpl implements CustomerDao {
 
+    @Override
     public boolean addCustomer(Customer customer) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -25,6 +27,7 @@ public class CustomerDaoImpl {
 
     }
 
+    @Override
     public boolean deleteCustomer(String id) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -34,6 +37,7 @@ public class CustomerDaoImpl {
         return pstm.executeUpdate()> 0;
     }
 
+    @Override
     public boolean updateCustomer(Customer customer) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -45,6 +49,7 @@ public class CustomerDaoImpl {
         return pstm.executeUpdate()> 0;
     }
 
+    @Override
     public Customer searchCustomer(String id) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement pstm= connection.prepareStatement("SELECT * FROM Customer where cID=?");
@@ -60,6 +65,7 @@ public class CustomerDaoImpl {
         return null;
     }
 
+    @Override
     public ArrayList<Customer> getAllCustomers() throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
         Statement stm = connection.createStatement();

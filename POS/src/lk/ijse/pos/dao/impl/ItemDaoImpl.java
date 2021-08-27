@@ -1,5 +1,6 @@
-package lk.ijse.pos.dao;
+package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.ItemDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.model.Item;
@@ -12,8 +13,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ItemDaoImpl {
+public class ItemDaoImpl implements ItemDao {
 
+    @Override
     public boolean adItem(Item item) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -27,6 +29,7 @@ public class ItemDaoImpl {
         return pstm.executeUpdate()> 0;
     }
 
+    @Override
     public boolean deleteItem(String code) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -37,6 +40,7 @@ public class ItemDaoImpl {
         return pstm.executeUpdate()>0;
     }
 
+    @Override
     public boolean updateItem(Item item) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -50,6 +54,7 @@ public class ItemDaoImpl {
         return pstm.executeUpdate()>0;
     }
 
+    @Override
     public Item searchItem(String code) throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement pstm= connection.prepareStatement("SELECT * FROM Item where code=?");
@@ -66,6 +71,7 @@ public class ItemDaoImpl {
         return null;
     }
 
+    @Override
     public ArrayList<Item> getAllItems() throws Exception {
         Connection connection = DBConnection.getInstance().getConnection();
 
@@ -86,6 +92,16 @@ public class ItemDaoImpl {
             alItems.add(item);
         }
         return alItems;
+    }
+
+
+    @Override
+    public boolean updateItemQty(int qty, String code) throws Exception {
+        Connection connection = DBConnection.getInstance().getConnection();
+        PreparedStatement pstm2 = connection.prepareStatement("UPDATE Item SET qtyOnHand=? WHERE code=?");
+        pstm2.setObject(1, qty);
+        pstm2.setObject(2, code);
+        return pstm2.executeUpdate()>0;
     }
 
 

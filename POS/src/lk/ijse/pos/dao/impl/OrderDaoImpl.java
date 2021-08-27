@@ -1,5 +1,6 @@
-package lk.ijse.pos.dao;
+package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.OrderDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Orders;
 
@@ -7,8 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
-public class OrderDaoImpl {
+public class OrderDaoImpl implements OrderDao {
 
+    @Override
     public boolean addOrder(Orders orders) throws Exception {
         System.out.println(orders.getId());
         Connection connection = DBConnection.getInstance().getConnection();
@@ -20,28 +22,23 @@ public class OrderDaoImpl {
         return pstm.executeUpdate()>0;
     }
 
+    @Override
     public boolean deleteOrder(String id){
-        return false;
+        throw new UnsupportedOperationException("This feature not supported.");
     }
 
-    public boolean updateOrder(Orders orders){
-        return false;
-    }
+    @Override
+    public boolean updateOrder(Orders orders){ throw new UnsupportedOperationException("This feature not supported."); }
 
+    @Override
     public Orders searchOrder(String id){
-        return null;
+        throw new UnsupportedOperationException("This feature not supported.");
     }
 
+    @Override
     public ArrayList<Orders> getAllOrders(){
-        return null;
+        throw new UnsupportedOperationException("This feature not supported.");
     }
 
-    public boolean updateItemQty(int qty, String code) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement pstm2 = connection.prepareStatement("UPDATE Item SET qtyOnHand=? WHERE code=?");
-        pstm2.setObject(1, qty);
-        pstm2.setObject(2, code);
-        return pstm2.executeUpdate()>0;
-    }
 
 }

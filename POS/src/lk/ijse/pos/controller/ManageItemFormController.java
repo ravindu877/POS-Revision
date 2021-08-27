@@ -16,18 +16,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
-import lk.ijse.pos.dao.ItemDaoImpl;
-import lk.ijse.pos.db.DBConnection;
+import lk.ijse.pos.dao.ItemDao;
+import lk.ijse.pos.dao.impl.ItemDaoImpl;
 import lk.ijse.pos.model.Item;
 import lk.ijse.pos.view.tblmodel.ItemTM;
 
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -54,13 +50,18 @@ public class ManageItemFormController implements Initializable{
     @FXML
     private TableView<ItemTM> tblItems;
 
+
+
+    ItemDao itemDao= new ItemDaoImpl();
+
+
+
     private boolean addNew = true;
 
     private void loadAllItems(){
 
         try {
 
-            ItemDaoImpl itemDao= new ItemDaoImpl();
             ArrayList<Item> allItems= itemDao.getAllItems();
 
 
@@ -144,7 +145,6 @@ public class ManageItemFormController implements Initializable{
 
             try {
 
-                ItemDaoImpl itemDao= new ItemDaoImpl();
                  boolean isAdded= itemDao.adItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
                 if (isAdded){
@@ -160,7 +160,7 @@ public class ManageItemFormController implements Initializable{
         }else{
 
             try {
-                ItemDaoImpl itemDao= new ItemDaoImpl();
+
                 boolean isUpDated= itemDao.updateItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
 
@@ -187,8 +187,6 @@ public class ManageItemFormController implements Initializable{
         String code = tblItems.getSelectionModel().getSelectedItem().getCode();
 
         try {
-
-            ItemDaoImpl itemDao= new ItemDaoImpl();
 
             boolean isDeleted= itemDao.deleteItem(code);
 
