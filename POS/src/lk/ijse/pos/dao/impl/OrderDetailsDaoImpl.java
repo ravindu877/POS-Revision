@@ -1,5 +1,6 @@
 package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.CrudUtil;
 import lk.ijse.pos.dao.OrderDetailsDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.OrderDetails;
@@ -13,13 +14,10 @@ public class OrderDetailsDaoImpl implements OrderDetailsDao {
 
     @Override
     public boolean addOrderDetails(OrderDetails orderDetails) throws Exception {
-        Connection connection= DBConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO OrderDetails VALUES (?,?,?,?)");
-        pstm.setObject(1, orderDetails.getOrderId());
-        pstm.setObject(2, orderDetails.getItemCode());
-        pstm.setObject(3, orderDetails.getQty());
-        pstm.setObject(4, orderDetails.getUnitPrice());
-        return pstm.executeUpdate()>0;
+
+        String sql= "INSERT INTO OrderDetails VALUES (?,?,?,?)";
+
+        return CrudUtil.executeUpdate(sql,orderDetails.getOrderId(),orderDetails.getItemCode(),orderDetails.getOrderId(),orderDetails.getUnitPrice());
     }
 
     @Override
