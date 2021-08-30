@@ -1,5 +1,6 @@
 package lk.ijse.pos.dao.impl;
 
+import lk.ijse.pos.dao.CrudUtil;
 import lk.ijse.pos.dao.CustomerDao;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Customer;
@@ -15,46 +16,38 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean addCustomer(Customer customer) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
 
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO Customer VALUES (?,?,?)");
+        String sql= "INSERT INTO Customer VALUES (?,?,?)";
 
-        pstm.setObject(1, customer.getcID());
-        pstm.setObject(2, customer.getName());
-        pstm.setObject(3, customer.getAddress());
-
-        return pstm.executeUpdate()> 0;
+        return CrudUtil.executeUpdate(sql,customer.getcID(),customer.getName(),customer.getAddress());
 
     }
 
     @Override
     public boolean deleteCustomer(String id) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
 
-        PreparedStatement pstm = connection.prepareStatement("DELETE FROM Customer WHERE id=?");
-        pstm.setObject(1, id);
 
-        return pstm.executeUpdate()> 0;
+        String sql= "DELETE FROM Customer WHERE id=?";
+
+        return  CrudUtil.executeUpdate(sql,id);
+
     }
 
     @Override
     public boolean updateCustomer(Customer customer) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
 
-        PreparedStatement pstm = connection.prepareStatement("UPDATE Customer SET name=?, address=? WHERE cID=?");
-        pstm.setObject(1, customer.getName());
-        pstm.setObject(2, customer.getAddress());
-        pstm.setObject(3, customer.getcID());
+        String sql= "UPDATE Customer SET name=?, address=? WHERE cID=?";
 
-        return pstm.executeUpdate()> 0;
+        return CrudUtil.executeUpdate(sql,customer.getName(),customer.getAddress(),customer.getcID());
+
     }
 
     @Override
     public Customer searchCustomer(String id) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement pstm= connection.prepareStatement("SELECT * FROM Customer where cID=?");
-        pstm.setObject(1,id);
-        ResultSet rst = pstm.executeQuery();
+
+        String sql= "SELECT * FROM Customer where cID=?";
+
+        ResultSet rst = CrudUtil.executeQuery(sql,id);
         if (rst.next()){
             return new Customer(
                     rst.getString(1),
@@ -67,9 +60,10 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public ArrayList<Customer> getAllCustomers() throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
-        Statement stm = connection.createStatement();
-        ResultSet rst = stm.executeQuery("SELECT * FROM Customer");
+
+        String sql= "SELECT * FROM Customer";
+
+        ResultSet rst = CrudUtil.executeQuery(sql);
         ArrayList<Customer> allCustomers = new ArrayList<>();
 
         while (rst.next()){
