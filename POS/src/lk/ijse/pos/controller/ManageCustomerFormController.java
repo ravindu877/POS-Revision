@@ -16,11 +16,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
-import lk.ijse.pos.dao.CustomerDao;
-import lk.ijse.pos.dao.impl.CustomerDaoImpl;
+import lk.ijse.pos.dao.custom.CustomerDao;
+import lk.ijse.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.view.tblmodel.CustomerTM;
-
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class ManageCustomerFormController implements Initializable {
         try {
             /*get all*/
 
-            ArrayList<Customer> allCustomers = customerDao.getAllCustomers();
+            ArrayList<Customer> allCustomers = customerDao.getAll();
             ArrayList<CustomerTM> allCustomersForTable = new ArrayList<>();
 
             ArrayList<CustomerTM> alCustomers = new ArrayList<>();
@@ -129,7 +128,7 @@ public class ManageCustomerFormController implements Initializable {
             try {
 
 
-                boolean isDelete= customerDao.deleteCustomer(customerID);
+                boolean isDelete= customerDao.delete(customerID);
 
                 if (isDelete) {
                     loadAllCustomers();
@@ -167,7 +166,7 @@ public class ManageCustomerFormController implements Initializable {
             try {
 
 
-                boolean isAdded= customerDao.addCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
+                boolean isAdded= customerDao.add(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
 
 
                 if (isAdded) {
@@ -183,7 +182,7 @@ public class ManageCustomerFormController implements Initializable {
             try {
                 /*Update*/
 
-                boolean isUpdated= customerDao.updateCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
+                boolean isUpdated= customerDao.update(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
 
                 if (isUpdated) {
                     loadAllCustomers();

@@ -1,41 +1,37 @@
-package lk.ijse.pos.dao.impl;
+package lk.ijse.pos.dao.custom.impl;
 
 import lk.ijse.pos.dao.CrudUtil;
-import lk.ijse.pos.dao.OrderDao;
-import lk.ijse.pos.db.DBConnection;
+import lk.ijse.pos.dao.custom.OrderDao;
 import lk.ijse.pos.model.Orders;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 public class OrderDaoImpl implements OrderDao {
 
+
     @Override
-    public boolean addOrder(Orders orders) throws Exception {
-
+    public boolean add(Orders orders) throws Exception {
         String sql= "INSERT INTO Orders VALUES (?,?,?)";
-
         return CrudUtil.executeUpdate(sql,orders.getId(),orders.getDate(),orders.getCustomerId());
     }
 
     @Override
-    public boolean deleteOrder(String id){
+    public boolean delete(String s) throws Exception {
         throw new UnsupportedOperationException("This feature not supported.");
     }
 
     @Override
-    public boolean updateOrder(Orders orders){ throw new UnsupportedOperationException("This feature not supported."); }
-
-    @Override
-    public Orders searchOrder(String id){
+    public boolean update(Orders orders) throws Exception {
         throw new UnsupportedOperationException("This feature not supported.");
     }
 
     @Override
-    public ArrayList<Orders> getAllOrders(){
+    public Orders searchC(String s) throws Exception {
         throw new UnsupportedOperationException("This feature not supported.");
     }
 
-
+    @Override
+    public ArrayList<Orders> getAll() throws Exception {
+        throw new UnsupportedOperationException("This feature not supported.");
+    }
 }
