@@ -22,14 +22,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import lk.ijse.pos.bo.custom.PlaceOrderBo;
 import lk.ijse.pos.bo.custom.impl.PlaceOrderBoImpl;
-import lk.ijse.pos.dao.custom.CustomerDao;
-import lk.ijse.pos.dao.custom.ItemDao;
-import lk.ijse.pos.dao.custom.OrderDao;
-import lk.ijse.pos.dao.custom.OrderDetailsDao;
-import lk.ijse.pos.dao.custom.impl.CustomerDaoImpl;
-import lk.ijse.pos.dao.custom.impl.ItemDaoImpl;
-import lk.ijse.pos.dao.custom.impl.OrderDaoImpl;
-import lk.ijse.pos.dao.custom.impl.OrderDetailsDaoImpl;
 import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.model.Item;
@@ -93,6 +85,9 @@ public class OrderFormController implements Initializable {
     private Connection connection;
 
     PlaceOrderBo placeOrderBo= new PlaceOrderBoImpl();
+
+    public OrderFormController() throws Exception {
+    }
 
 
     @Override

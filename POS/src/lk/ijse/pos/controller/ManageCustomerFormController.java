@@ -16,10 +16,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
-import lk.ijse.pos.bo.CustomerBo;
+import lk.ijse.pos.bo.custom.CustomerBo;
 import lk.ijse.pos.bo.custom.impl.CustomerBoImpl;
-import lk.ijse.pos.dao.custom.CustomerDao;
-import lk.ijse.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.view.tblmodel.CustomerTM;
 

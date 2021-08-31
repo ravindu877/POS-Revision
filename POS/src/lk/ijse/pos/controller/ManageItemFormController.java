@@ -18,8 +18,6 @@ import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
 import lk.ijse.pos.bo.custom.ItemBo;
 import lk.ijse.pos.bo.custom.impl.ItemBoImpl;
-import lk.ijse.pos.dao.custom.ItemDao;
-import lk.ijse.pos.dao.custom.impl.ItemDaoImpl;
 import lk.ijse.pos.model.Item;
 import lk.ijse.pos.view.tblmodel.ItemTM;
 

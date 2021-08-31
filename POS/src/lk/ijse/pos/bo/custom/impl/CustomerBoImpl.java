@@ -1,6 +1,7 @@
 package lk.ijse.pos.bo.custom.impl;
 
 import lk.ijse.pos.bo.custom.CustomerBo;
+import lk.ijse.pos.dao.DaoFactory;
 import lk.ijse.pos.dao.custom.CustomerDao;
 import lk.ijse.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ijse.pos.model.Customer;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public class CustomerBoImpl implements CustomerBo {
 
-    CustomerDao customerDao= new CustomerDaoImpl();
+    CustomerDao customerDao= (CustomerDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.CUSTOMER);
 
 
     @Override

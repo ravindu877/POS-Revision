@@ -2,6 +2,7 @@ package lk.ijse.pos.bo.custom.impl;
 
 import lk.ijse.pos.bo.custom.PlaceOrderBo;
 import lk.ijse.pos.controller.OrderFormController;
+import lk.ijse.pos.dao.DaoFactory;
 import lk.ijse.pos.dao.custom.CustomerDao;
 import lk.ijse.pos.dao.custom.ItemDao;
 import lk.ijse.pos.dao.custom.OrderDao;
@@ -10,6 +11,7 @@ import lk.ijse.pos.dao.custom.impl.CustomerDaoImpl;
 import lk.ijse.pos.dao.custom.impl.ItemDaoImpl;
 import lk.ijse.pos.dao.custom.impl.OrderDaoImpl;
 import lk.ijse.pos.dao.custom.impl.OrderDetailsDaoImpl;
+import lk.ijse.pos.db.DBConnection;
 import lk.ijse.pos.model.Customer;
 import lk.ijse.pos.model.Item;
 import lk.ijse.pos.model.OrderDetails;
@@ -23,16 +25,21 @@ import java.util.logging.Logger;
 
 public class PlaceOrderBoImpl implements PlaceOrderBo {
 
-    private Connection connection;
 
 
-    private final CustomerDao customerDao = new CustomerDaoImpl();
-    private final ItemDao itemDao = new ItemDaoImpl();
-    private final OrderDao orderDao = new OrderDaoImpl();
-    private final OrderDetailsDao orderDetailsDao = new OrderDetailsDaoImpl();
+
+    private final CustomerDao customerDao = (CustomerDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.CUSTOMER);
+    private final ItemDao itemDao = (ItemDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.ITEM);
+    private final OrderDao orderDao = (OrderDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.ORDERS);
+    private final OrderDetailsDao orderDetailsDao = (OrderDetailsDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.ORDERDETAILS);
+
+    public PlaceOrderBoImpl() throws Exception {
+    }
 
     @Override
     public boolean placeOrder(Orders orders, ArrayList<OrderDetails> orderDetails) throws Exception {
+
+        Connection connection = DBConnection.getInstance().getConnection();
 
         try {
             connection.setAutoCommit(false);
