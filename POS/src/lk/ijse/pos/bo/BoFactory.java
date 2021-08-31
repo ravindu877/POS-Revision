@@ -1,4 +1,4 @@
-package lk.ijse.pos.bo.custom;
+package lk.ijse.pos.bo;
 
 import lk.ijse.pos.bo.custom.impl.CustomerBoImpl;
 import lk.ijse.pos.bo.custom.impl.ItemBoImpl;

@@ -1,12 +1,8 @@
-package lk.ijse.pos.model;
+package lk.ijse.pos.entity;
 
 import java.math.BigDecimal;
 
 
-/**
- * @author : Sanu Vithanage
- * @since : 0.1.0
- **/
 
 public class OrderDetails {
     private String orderId;

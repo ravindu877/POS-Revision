@@ -2,7 +2,7 @@ package lk.ijse.pos.dao.custom.impl;
 
 import lk.ijse.pos.dao.CrudUtil;
 import lk.ijse.pos.dao.custom.ItemDao;
-import lk.ijse.pos.model.Item;
+import lk.ijse.pos.entity.Item;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

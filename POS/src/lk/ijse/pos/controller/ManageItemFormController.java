@@ -16,10 +16,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
-import lk.ijse.pos.bo.custom.BoFactory;
+import lk.ijse.pos.bo.BoFactory;
 import lk.ijse.pos.bo.custom.ItemBo;
-import lk.ijse.pos.bo.custom.impl.ItemBoImpl;
-import lk.ijse.pos.model.Item;
+import lk.ijse.pos.dto.ItemDto;
 import lk.ijse.pos.view.tblmodel.ItemTM;
 
 
@@ -63,12 +62,12 @@ public class ManageItemFormController implements Initializable{
 
         try {
 
-            ArrayList<Item> allItems= itemBo.getAllItems();
+            ArrayList<ItemDto> allItems= itemBo.getAllItems();
 
 
             ArrayList<ItemTM> allItemTMa = new ArrayList<>();
 
-            for (Item i: allItems) {
+            for (ItemDto i: allItems) {
                 allItemTMa.add(new ItemTM(i.getCode(),i.getDescription(),i.getUnitPrice(),i.getQtyOnHand()));
             }
 
@@ -146,7 +145,7 @@ public class ManageItemFormController implements Initializable{
 
             try {
 
-                 boolean isAdded= itemBo.saveItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
+                 boolean isAdded= itemBo.saveItem(new ItemDto(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
                 if (isAdded){
                     loadAllItems();
@@ -162,7 +161,7 @@ public class ManageItemFormController implements Initializable{
 
             try {
 
-                boolean isUpDated= itemBo.updateItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
+                boolean isUpDated= itemBo.updateItem(new ItemDto(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
 
                 if (isUpDated){

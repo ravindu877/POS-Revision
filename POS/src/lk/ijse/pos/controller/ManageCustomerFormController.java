@@ -16,10 +16,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
-import lk.ijse.pos.bo.custom.BoFactory;
+import lk.ijse.pos.bo.BoFactory;
 import lk.ijse.pos.bo.custom.CustomerBo;
-import lk.ijse.pos.bo.custom.impl.CustomerBoImpl;
-import lk.ijse.pos.model.Customer;
+import lk.ijse.pos.dto.CustomerDto;
 import lk.ijse.pos.view.tblmodel.CustomerTM;
 
 import java.net.URL;
@@ -28,11 +27,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- * @author : Sanu Vithanage
- * @since : 0.1.0
- **/
 
 public class ManageCustomerFormController implements Initializable {
 
@@ -56,17 +50,14 @@ public class ManageCustomerFormController implements Initializable {
     private void loadAllCustomers() {
 
         try {
-            /*get all*/
-
-            ArrayList<Customer> allCustomers = customerBo.getAllCustomers();
+            ArrayList<CustomerDto> allCustomers = customerBo.getAllCustomers();
             ArrayList<CustomerTM> allCustomersForTable = new ArrayList<>();
 
             ArrayList<CustomerTM> alCustomers = new ArrayList<>();
 
-            for (Customer customer : allCustomers) {
+            for (CustomerDto customer : allCustomers) {
                 allCustomersForTable.add(new CustomerTM(customer.getcID(), customer.getName(), customer.getAddress()));
             }
-
 
             ObservableList<CustomerTM> olCustomers = FXCollections.observableArrayList(allCustomersForTable);
 
@@ -78,9 +69,7 @@ public class ManageCustomerFormController implements Initializable {
 
     }
 
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         tblCustomers.getColumns().get(0).setStyle("-fx-alignment:center");
@@ -127,10 +116,7 @@ public class ManageCustomerFormController implements Initializable {
             String customerID = tblCustomers.getSelectionModel().getSelectedItem().getId();
 
             try {
-
-
                 boolean isDelete= customerBo.deleteCustomer(customerID);
-
                 if (isDelete) {
                     loadAllCustomers();
                 } else {
@@ -155,7 +141,6 @@ public class ManageCustomerFormController implements Initializable {
     private void btnAddNewCustomer_OnAction(ActionEvent event) {
         txtCustomerId.requestFocus();
         tblCustomers.getSelectionModel().clearSelection();
-
         addnew = true;
     }
 
@@ -163,13 +148,8 @@ public class ManageCustomerFormController implements Initializable {
     private void btnSave_OnAction(ActionEvent event) {
 
         if (addnew) {
-
             try {
-
-
-                boolean isAdded= customerBo.saveCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
-
-
+                boolean isAdded= customerBo.saveCustomer(new CustomerDto(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
                 if (isAdded) {
                     loadAllCustomers();
                 } else {
@@ -181,17 +161,12 @@ public class ManageCustomerFormController implements Initializable {
 
         } else {
             try {
-                /*Update*/
-
-                boolean isUpdated= customerBo.updateCustomer(new Customer(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
-
+                boolean isUpdated= customerBo.updateCustomer(new CustomerDto(txtCustomerId.getText(),txtCustomerName.getText(),txtCustomerAddress.getText()));
                 if (isUpdated) {
                     loadAllCustomers();
                 } else {
                     new Alert(Alert.AlertType.ERROR, "Unable to update the customer", ButtonType.OK).show();
                 }
-
-
             } catch (Exception ex) {
                 Logger.getLogger(ManageCustomerFormController.class.getName()).log(Level.SEVERE, null, ex);
             }

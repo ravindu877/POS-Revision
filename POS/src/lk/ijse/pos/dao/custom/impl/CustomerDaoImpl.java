@@ -2,7 +2,7 @@ package lk.ijse.pos.dao.custom.impl;
 
 import lk.ijse.pos.dao.CrudUtil;
 import lk.ijse.pos.dao.custom.CustomerDao;
-import lk.ijse.pos.model.Customer;
+import lk.ijse.pos.entity.Customer;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean delete(String id) throws Exception {
-        String sql= "DELETE FROM Customer WHERE id=?";
+        String sql= "DELETE FROM Customer WHERE cid=?";
         return  CrudUtil.executeUpdate(sql,id);
     }
 

@@ -20,14 +20,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import lk.ijse.pos.bo.custom.BoFactory;
+import lk.ijse.pos.bo.BoFactory;
+import lk.ijse.pos.bo.custom.CustomerBo;
+import lk.ijse.pos.bo.custom.ItemBo;
 import lk.ijse.pos.bo.custom.PlaceOrderBo;
-import lk.ijse.pos.bo.custom.impl.PlaceOrderBoImpl;
 import lk.ijse.pos.db.DBConnection;
-import lk.ijse.pos.model.Customer;
-import lk.ijse.pos.model.Item;
-import lk.ijse.pos.model.OrderDetails;
-import lk.ijse.pos.model.Orders;
+import lk.ijse.pos.dto.CustomerDto;
+import lk.ijse.pos.dto.ItemDto;
+import lk.ijse.pos.dto.OrderDetailDto;
+import lk.ijse.pos.dto.OrderDto;
 import lk.ijse.pos.view.tblmodel.OrderDetailTM;
 
 
@@ -86,6 +87,8 @@ public class OrderFormController implements Initializable {
     private Connection connection;
 
     PlaceOrderBo placeOrderBo= (PlaceOrderBo) BoFactory.getInstance().getBO(BoFactory.BOTypes.PLASEORDER);
+    CustomerBo customerBo= (CustomerBo) BoFactory.getInstance().getBO(BoFactory.BOTypes.CUSTOMER);
+    ItemBo itemBo= (ItemBo) BoFactory.getInstance().getBO(BoFactory.BOTypes.ITEM);
 
     public OrderFormController() throws Exception {
     }
@@ -133,7 +136,7 @@ public class OrderFormController implements Initializable {
 
                 try {
 
-                    Customer customer= placeOrderBo.searchCustomer(customerID);
+                    CustomerDto customer= customerBo.searchCustomer(customerID);
 
                     if (customer != null) {
                         txtCustomerName.setText(customer.getName());
@@ -162,7 +165,7 @@ public class OrderFormController implements Initializable {
 
                 try {
 
-                    Item item= placeOrderBo.searchItem(itemCode);
+                    ItemDto item= itemBo.searchItem(itemCode);
 
                     if (item!=null) {
                         String description = item.getDescription();
@@ -233,21 +236,21 @@ public class OrderFormController implements Initializable {
 
     private void loadAllData() throws Exception {
 
-        ArrayList<Customer> customer= placeOrderBo.getAllCustomers();
+        ArrayList<CustomerDto> customer= customerBo.getAllCustomers();
 
         cmbCustomerID.getItems().removeAll(cmbCustomerID.getItems());
 
-        for (Customer customer1: customer) {
+        for (CustomerDto customer1: customer) {
             String id = customer1.getcID();
             cmbCustomerID.getItems().add(id);
         }
 
 
-        ArrayList<Item> items= placeOrderBo.getAllItems();
+        ArrayList<ItemDto> items= itemBo.getAllItems();
 
         cmbItemCode.getItems().removeAll(cmbItemCode.getItems());
 
-        for (Item item: items) {
+        for (ItemDto item: items) {
             String itemCode = item.getCode();
             cmbItemCode.getItems().add(itemCode);
         }
@@ -320,12 +323,12 @@ public class OrderFormController implements Initializable {
 
             String custID=cmbCustomerID.getSelectionModel().getSelectedItem();
 
-            Orders orders= new Orders(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID);
+            OrderDto orders= new OrderDto(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID);
 
-            ArrayList<OrderDetails> orderDetails1 = new ArrayList<>();
+            ArrayList<OrderDetailDto> orderDetails1 = new ArrayList<>();
 
             for (OrderDetailTM orderDetail : olOrderDetails) {
-                orderDetails1.add(new OrderDetails(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
+                orderDetails1.add(new OrderDetailDto(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
             }
 
             boolean isAdded = placeOrderBo.placeOrder(orders,orderDetails1);
