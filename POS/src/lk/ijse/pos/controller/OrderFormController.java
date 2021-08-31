@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lk.ijse.pos.bo.custom.impl.PlaceOrderBoImpl;
 import lk.ijse.pos.dao.custom.CustomerDao;
 import lk.ijse.pos.dao.custom.ItemDao;
 import lk.ijse.pos.dao.custom.OrderDao;
@@ -90,10 +91,8 @@ public class OrderFormController implements Initializable {
 
     private Connection connection;
 
-    CustomerDao customerDao= new CustomerDaoImpl();
-    ItemDao itemDao= new ItemDaoImpl();
-    OrderDao orderDao= new OrderDaoImpl();
-    OrderDetailsDao orderDetailsDao= new OrderDetailsDaoImpl();
+    PlaceOrderBoImpl placeOrderBo= new PlaceOrderBoImpl();
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -137,7 +136,7 @@ public class OrderFormController implements Initializable {
 
                 try {
 
-                    Customer customer= customerDao.searchC(customerID);
+                    Customer customer= placeOrderBo.searchCustomer(customerID);
 
                     if (customer != null) {
                         txtCustomerName.setText(customer.getName());
@@ -166,7 +165,7 @@ public class OrderFormController implements Initializable {
 
                 try {
 
-                    Item item= itemDao.searchC(itemCode);
+                    Item item= placeOrderBo.searchItem(itemCode);
 
                     if (item!=null) {
                         String description = item.getDescription();
@@ -237,7 +236,7 @@ public class OrderFormController implements Initializable {
 
     private void loadAllData() throws Exception {
 
-        ArrayList<Customer> customer= customerDao.getAll();
+        ArrayList<Customer> customer= placeOrderBo.getAllCustomers();
 
         cmbCustomerID.getItems().removeAll(cmbCustomerID.getItems());
 
@@ -247,7 +246,7 @@ public class OrderFormController implements Initializable {
         }
 
 
-        ArrayList<Item> items= itemDao.getAll();
+        ArrayList<Item> items= placeOrderBo.getAllItems();
 
         cmbItemCode.getItems().removeAll(cmbItemCode.getItems());
 
@@ -318,64 +317,36 @@ public class OrderFormController implements Initializable {
     }
 
     @FXML
-    private void btnPlaceOrderOnAction(ActionEvent event) throws Exception {
+    private void btnPlaceOrderOnAction(ActionEvent event) {
+
         try {
-            connection.setAutoCommit(false);
 
             String custID=cmbCustomerID.getSelectionModel().getSelectedItem();
 
-            boolean isAdded= orderDao.add(new Orders(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID));
+            Orders orders= new Orders(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID);
 
-            if (!isAdded) {
-                connection.rollback();
-                return;
-            }
-
+            ArrayList<OrderDetails> orderDetails1 = null;
 
             for (OrderDetailTM orderDetail : olOrderDetails) {
-
-                boolean isAdded1= orderDetailsDao.add(new OrderDetails(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
-
-                if (!isAdded1) {
-                    connection.rollback();
-                    return;
-                }
-                int qtyOnHand = 0;
-
-                Item item= itemDao.searchC(orderDetail.getItemCode());
-
-                if (item!=null) {
-                    qtyOnHand = item.getQtyOnHand();
-                }
-
-                int newQry= qtyOnHand - orderDetail.getQty();
-                boolean issAdded1= itemDao.updateItemQty(newQry,orderDetail.getItemCode());
-
-                if (!issAdded1) {
-                    connection.rollback();
-                    return;
-                }
-
+                orderDetails1.add(new OrderDetails(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
             }
 
-            connection.commit();
+
+            boolean isAdded = placeOrderBo.placeOrder(orders,orderDetails1);
+
+            if (!isAdded){
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Something went wrong", ButtonType.OK);
+                alert.show();
+            }
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Order Placed", ButtonType.OK);
             alert.show();
-
-        } catch (SQLException ex) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-                Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException ex) {
-                Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
+
+
 
     }
 

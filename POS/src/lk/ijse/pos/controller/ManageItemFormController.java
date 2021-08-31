@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lk.ijse.pos.AppInitializer;
+import lk.ijse.pos.bo.custom.impl.ItemBoImpl;
 import lk.ijse.pos.dao.custom.ItemDao;
 import lk.ijse.pos.dao.custom.impl.ItemDaoImpl;
 import lk.ijse.pos.model.Item;
@@ -52,7 +53,7 @@ public class ManageItemFormController implements Initializable{
 
 
 
-    ItemDao itemDao= new ItemDaoImpl();
+    ItemBoImpl itemBo= new ItemBoImpl();
 
 
 
@@ -62,7 +63,7 @@ public class ManageItemFormController implements Initializable{
 
         try {
 
-            ArrayList<Item> allItems= itemDao.getAll();
+            ArrayList<Item> allItems= itemBo.getAllItems();
 
 
             ArrayList<ItemTM> allItemTMa = new ArrayList<>();
@@ -145,7 +146,7 @@ public class ManageItemFormController implements Initializable{
 
             try {
 
-                 boolean isAdded= itemDao.add(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
+                 boolean isAdded= itemBo.saveItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
                 if (isAdded){
                     loadAllItems();
@@ -161,7 +162,7 @@ public class ManageItemFormController implements Initializable{
 
             try {
 
-                boolean isUpDated= itemDao.update(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
+                boolean isUpDated= itemBo.updateItem(new Item(txtItemCode.getText(),txtDescription.getText(),new BigDecimal(txtUnitPrice.getText()),Integer.parseInt(txtQty.getText())));
 
 
                 if (isUpDated){
@@ -188,7 +189,7 @@ public class ManageItemFormController implements Initializable{
 
         try {
 
-            boolean isDeleted= itemDao.delete(code);
+            boolean isDeleted= itemBo.deleteItem(code);
 
             if (isDeleted){
                 loadAllItems();
