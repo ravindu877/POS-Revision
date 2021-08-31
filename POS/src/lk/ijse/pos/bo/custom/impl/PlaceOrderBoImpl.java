@@ -33,9 +33,6 @@ public class PlaceOrderBoImpl implements PlaceOrderBo {
     private final OrderDao orderDao = (OrderDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.ORDERS);
     private final OrderDetailsDao orderDetailsDao = (OrderDetailsDao) DaoFactory.getInstance().getDAO(DaoFactory.DaoTypes.ORDERDETAILS);
 
-    public PlaceOrderBoImpl() throws Exception {
-    }
-
     @Override
     public boolean placeOrder(Orders orders, ArrayList<OrderDetails> orderDetails) throws Exception {
 
@@ -84,16 +81,23 @@ public class PlaceOrderBoImpl implements PlaceOrderBo {
             try {
                 connection.rollback();
             } catch (SQLException ex1) {
+                Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
                 throw new Exception(ex1);
             }
             Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
+            throw new Exception(ex);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new Exception(e);
         } finally {
             try {
                 connection.setAutoCommit(true);
                 return true;
             } catch (SQLException ex) {
+                Logger.getLogger(OrderFormController.class.getName()).log(Level.SEVERE, null, ex);
                 throw new Exception(ex);
             }
+
         }
 
     }

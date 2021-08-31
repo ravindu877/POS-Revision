@@ -7,7 +7,7 @@ import lk.ijse.pos.model.Orders;
 
 import java.util.ArrayList;
 
-public interface PlaceOrderBo {
+public interface PlaceOrderBo extends SuperBo{
 
     public boolean placeOrder(Orders orders, ArrayList<OrderDetails> orderDetails) throws Exception;
 

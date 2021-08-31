@@ -4,7 +4,7 @@ import lk.ijse.pos.model.Customer;
 
 import java.util.ArrayList;
 
-public interface CustomerBo {
+public interface CustomerBo extends SuperBo{
 
     public boolean saveCustomer(Customer customer) throws Exception;
 

@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lk.ijse.pos.bo.custom.BoFactory;
 import lk.ijse.pos.bo.custom.PlaceOrderBo;
 import lk.ijse.pos.bo.custom.impl.PlaceOrderBoImpl;
 import lk.ijse.pos.db.DBConnection;
@@ -84,7 +85,7 @@ public class OrderFormController implements Initializable {
 
     private Connection connection;
 
-    PlaceOrderBo placeOrderBo= new PlaceOrderBoImpl();
+    PlaceOrderBo placeOrderBo= (PlaceOrderBo) BoFactory.getInstance().getBO(BoFactory.BOTypes.PLASEORDER);
 
     public OrderFormController() throws Exception {
     }
