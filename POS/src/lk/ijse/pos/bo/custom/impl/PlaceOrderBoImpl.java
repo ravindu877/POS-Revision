@@ -1,5 +1,6 @@
 package lk.ijse.pos.bo.custom.impl;
 
+import lk.ijse.pos.bo.custom.PlaceOrderBo;
 import lk.ijse.pos.controller.OrderFormController;
 import lk.ijse.pos.dao.custom.CustomerDao;
 import lk.ijse.pos.dao.custom.ItemDao;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PlaceOrderBoImpl {
+public class PlaceOrderBoImpl implements PlaceOrderBo {
 
     private Connection connection;
 
@@ -30,6 +31,7 @@ public class PlaceOrderBoImpl {
     private final OrderDao orderDao = new OrderDaoImpl();
     private final OrderDetailsDao orderDetailsDao = new OrderDetailsDaoImpl();
 
+    @Override
     public boolean placeOrder(Orders orders, ArrayList<OrderDetails> orderDetails) throws Exception {
 
         try {
@@ -69,6 +71,7 @@ public class PlaceOrderBoImpl {
             }
 
             connection.commit();
+            return true;
 
         } catch (SQLException ex) {
             try {
@@ -80,26 +83,30 @@ public class PlaceOrderBoImpl {
         } finally {
             try {
                 connection.setAutoCommit(true);
+                return true;
             } catch (SQLException ex) {
                 throw new Exception(ex);
             }
         }
 
-        return true;
     }
 
+    @Override
     public Customer searchCustomer(String id) throws Exception {
         return customerDao.searchC(id);
     }
 
+    @Override
     public Item searchItem(String code) throws Exception {
         return itemDao.searchC(code);
     }
 
+    @Override
     public ArrayList<Customer> getAllCustomers() throws Exception {
         return customerDao.getAll();
     }
 
+    @Override
     public ArrayList<Item> getAllItems() throws Exception {
         return itemDao.getAll();
     }

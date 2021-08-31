@@ -51,7 +51,7 @@ public class ManageCustomerFormController implements Initializable {
 
 
 
-    CustomerBoImpl customerBo= new CustomerBoImpl();
+    CustomerBo customerBo= new CustomerBoImpl();
 
 
     private void loadAllCustomers() {

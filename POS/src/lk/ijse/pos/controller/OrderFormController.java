@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lk.ijse.pos.bo.custom.PlaceOrderBo;
 import lk.ijse.pos.bo.custom.impl.PlaceOrderBoImpl;
 import lk.ijse.pos.dao.custom.CustomerDao;
 import lk.ijse.pos.dao.custom.ItemDao;
@@ -91,7 +92,7 @@ public class OrderFormController implements Initializable {
 
     private Connection connection;
 
-    PlaceOrderBoImpl placeOrderBo= new PlaceOrderBoImpl();
+    PlaceOrderBo placeOrderBo= new PlaceOrderBoImpl();
 
 
     @Override
@@ -325,12 +326,11 @@ public class OrderFormController implements Initializable {
 
             Orders orders= new Orders(txtOrderID.getText(),parseDate(txtOrderDate.getEditor().getText()),custID);
 
-            ArrayList<OrderDetails> orderDetails1 = null;
+            ArrayList<OrderDetails> orderDetails1 = new ArrayList<>();
 
             for (OrderDetailTM orderDetail : olOrderDetails) {
                 orderDetails1.add(new OrderDetails(txtOrderID.getText(),orderDetail.getItemCode(),orderDetail.getQty(),new BigDecimal(orderDetail.getUnitPrice())));
             }
-
 
             boolean isAdded = placeOrderBo.placeOrder(orders,orderDetails1);
 
